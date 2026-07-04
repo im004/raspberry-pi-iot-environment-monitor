@@ -30,13 +30,29 @@ DHT11 sensor -> dht_reader.py -> data_logger.py -> CSV storage
 LED actuator <- gpio_control.py <- /api/led POST <- dashboard button
 ```
 
-## Screenshots
+## Screenshots and system evidence
+
+### System block diagram
+
+The system uses a Raspberry Pi 4 as the main processing unit. A DHT11 sensor provides temperature and humidity readings through GPIO4, while an LED actuator is controlled through GPIO17. Sensor readings are written to daily CSV files and exposed through a Flask web server, REST API, and browser dashboard.
+
+![System block diagram](docs/screenshots/system-block-diagram.png)
 
 ### Live dashboard on Raspberry Pi
 
+The Flask dashboard displays the latest live reading, sensor status, recent history, and LED control interface.
+
 ![Live dashboard](docs/screenshots/sensor_live_dashboard.png)
 
+### Mobile dashboard and LED actuator control
+
+The dashboard was accessed from a smartphone over the same hotspot/local network. The LED actuator could be toggled remotely through the web interface.
+
+![Mobile dashboard controlling LED actuator](docs/screenshots/mobile-dashboard-led-on.jpg)
+
 ### Data logger and structured logs
+
+The logger writes timestamped readings to CSV every five seconds and records retry/success messages for DHT11 reads.
 
 ![Data logger output](docs/screenshots/data_logger_output.png)
 
@@ -44,19 +60,25 @@ LED actuator <- gpio_control.py <- /api/led POST <- dashboard button
 
 ### systemd services running
 
+The logger and web dashboard were configured as separate systemd services so the system could start automatically after reboot.
+
 ![systemd service status](docs/screenshots/systemd_service_status.png)
 
 ## Hardware wiring
 
-| Component | Raspberry Pi connection | Notes |
-|---|---|---|
-| DHT11 signal | BCM GPIO4 / physical pin 7 | Digital temperature and humidity data |
-| DHT11 VCC | 3.3V / physical pin 1 | 3.3V logic level used |
-| DHT11 GND | Ground / physical pin 6 | Common ground |
-| LED anode | BCM GPIO17 / physical pin 11 | Controlled by dashboard/API |
-| LED cathode | Ground through 330 ohm resistor | Current limiting |
+| Component    | Raspberry Pi connection         | Notes                                 |
+| ------------ | ------------------------------- | ------------------------------------- |
+| DHT11 signal | BCM GPIO4 / physical pin 7      | Digital temperature and humidity data |
+| DHT11 VCC    | 3.3V / physical pin 1           | 3.3V logic level used                 |
+| DHT11 GND    | Ground / physical pin 6         | Common ground                         |
+| LED anode    | BCM GPIO17 / physical pin 11    | Controlled by dashboard/API           |
+| LED cathode  | Ground through 330 ohm resistor | Current limiting                      |
 
 ## Software architecture
+
+The software is split into two runtime services: a logger service that owns the DHT11 sensor and writes validated readings to CSV, and a web service that serves the dashboard/API from the CSV output. This avoids direct sensor contention between the logger and web server.
+
+![Software architecture diagram](docs/screenshots/software-architecture.png)
 
 ```text
 src/
@@ -75,13 +97,13 @@ web/
 
 ## API endpoints
 
-| Method | Route | Purpose |
-|---|---|---|
-| `GET` | `/` | Render the dashboard |
-| `GET` | `/api/latest` | Return the latest logged sensor reading |
-| `GET` | `/api/history` | Return recent sensor readings for table/chart display |
-| `GET` | `/api/led` | Return current LED state |
-| `POST` | `/api/led` | Set LED state using JSON payload `{"on": true}` or `{"on": false}` |
+| Method | Route          | Purpose                                                            |
+| ------ | -------------- | ------------------------------------------------------------------ |
+| `GET`  | `/`            | Render the dashboard                                               |
+| `GET`  | `/api/latest`  | Return the latest logged sensor reading                            |
+| `GET`  | `/api/history` | Return recent sensor readings for table/chart display              |
+| `GET`  | `/api/led`     | Return current LED state                                           |
+| `POST` | `/api/led`     | Set LED state using JSON payload `{"on": true}` or `{"on": false}` |
 
 Example:
 
