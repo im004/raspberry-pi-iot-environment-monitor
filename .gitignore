@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Runtime data
+logs/*.log
+data/*.csv
+
+# Keep runtime folders in repo
+data/.gitkeep
+logs/.gitkeep
+
+# Local config / OS / editor files
+.env
+*.local
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.save
+*.bak
+*.tmp

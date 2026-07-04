@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>EE3638 IoT Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>EE3638 Remote DHT11 Monitor</h1>
+    <p class="subtitle">Raspberry Pi 4 - Temperature and Humidity</p>
+  </header>
+
+  <main>
+    <section id="status-section">
+      <h2>Sensor status</h2>
+      <p id="status-text">Loading...</p>
+      <p id="last-update">Last update: <span id="last-update-time">-</span></p>
+    </section>
+
+    <section id="latest-section">
+      <h2>Latest reading</h2>
+      <div class="card">
+        <div class="metric">
+          <span class="label">Temperature</span>
+          <span id="temp-value" class="value">--.-</span>
+          <span class="unit">°C</span>
+        </div>
+        <div class="metric">
+          <span class="label">Humidity</span>
+          <span id="hum-value" class="value">--.-</span>
+          <span class="unit">%</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="history-section">
+      <h2>Recent readings</h2>
+      <div class="chart-wrapper">
+        <canvas id="history-chart"></canvas>
+      </div>
+      <table id="history-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Temperature (°C)</th>
+            <th>Humidity (%)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="controls-section">
+      <h2>Controls</h2>
+      <p>LED status: <span id="led-status">unknown</span></p>
+      <button id="led-toggle-btn" type="button">Toggle LED</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>EE3638 Design for IoT - Remote DHT11 Device</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

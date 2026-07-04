@@ -1,0 +1,14 @@
+[Unit]
+Description=EE3638 DHT11 Data Logger
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/ee3638_iot
+ExecStart=/home/pi/ee3638_iot/scripts/run_logger.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
